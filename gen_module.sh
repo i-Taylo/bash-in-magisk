@@ -45,10 +45,12 @@ extract() {
 # Root interface detection
 #----------------------------------------
 KSUDIR="/data/adb/ksu"
+BUSYBOX="\$DEFAULT_PATH/busybox"
 KSU=false
 if [ -d \$KSUDIR ]; then
     KSU=true
     DEFAULT_PATH=\$KSUDIR
+    BUSYBOX="\$DEFAULT_PATH/bin/busybox"
 fi
 
 #----------------------------------------
@@ -59,33 +61,23 @@ extract "module.prop" \$MODPATH
 #----------------------------------------
 # Setup bash environment
 #----------------------------------------
-ADBROOT="/data/adb"
-BASHENV="\$ADBROOT/.bashenv"
+
 INSTALLER="\$MODPATH/installer.sh"
 
-extract ".bashenv/*" \$ADBROOT
-extract "\$IDENTIFIER_KEY" \$BASHENV
 extract "installer.sh" \$MODPATH
+extract "bin/bash.xz" \$TMPDIR
 
-#----------------------------------------
-# Environment validation
-#----------------------------------------
-# Check environment directory existence
-if [ ! -d \$BASHENV ]; then
-    abort "Error: Bash environment directory not found."
-fi
-
-# Verify required files
-if [ ! -f "\$BASHENV/bash" ] && [ ! -f "\$BASHENV/arch.data" ] && [ ! -f "\$BASHENV/busybox" ]; then
+if [ ! -f "\$TMPDIR/bin/bash.xz" ]; then
     abort "Error: required files are not found."
+else
+    \$BUSYBOX xz -d \$TMPDIR/bin/bash.xz
 fi
 
 #----------------------------------------
 # Set file permissions
 #----------------------------------------
-chmod 755 "\$BASHENV/bash" || abort "Couldn't change -> \$BASHENV/bash permission"
-chmod 600 "\$BASHENV/arch.data" || abort "Couldn't change -> \$BASHENV/arch.data permission"
-chmod 755 "\$BASHENV/busybox" || abort "Couldn't change -> \$BASHENV/busybox permission"
+chmod 755 "\$TMPDIR/bin/bash" || abort "Couldn't change -> \$TMPDIR/bin/bash permission"
+
 chmod +x "\$INSTALLER" || abort "Couldn't change -> \$INSTALLER permission"
 
 #----------------------------------------
@@ -97,27 +89,28 @@ export OUTFD
 export TMPDIR
 export DEFAULT_PATH
 export KSU
-export BASHENV
 export ABI32
 export IS64BIT
 export ARCH
+export BMODID
+export BUSYBOX
 
 #----------------------------------------
 # Define bash executor
 #----------------------------------------
 bashexe() {
-    \$BASHENV/bash "\$@"
+    \$TMPDIR/bin/bash "\$@"
 }
 
 #----------------------------------------
 # Execute installer
 #----------------------------------------
+BMODID="\$(bashexe --set-module-id $MODULE_ID)"
 bashexe -c ". \$DEFAULT_PATH/util_functions.sh; source \$INSTALLER"    
 
 #----------------------------------------
 # Cleanup
 #----------------------------------------
-[ -d \$BASHENV ] && rm -rf \$BASHENV
 [ -f \$MODPATH/installer.sh ] && rm \$MODPATH/installer.sh
 
 EOF
@@ -159,3 +152,4 @@ fi
 
 echo "Successfully created: $ZIPFILE_NAME"
 
+cp $ZIPFILE_NAME /sdcard
