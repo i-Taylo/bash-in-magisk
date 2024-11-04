@@ -19,7 +19,7 @@ UPDATE_JSON="#<json file link>"
 
 # File path definitions
 LAUNCHER_CODE="template/customize.sh"
-INSTALLATION_CODE="template/installer.bash"
+INSTALLATION_CODE="template/installer.sh"
 
 #------------------------------------------------------------------------------
 # Generate Launcher Script (customize.sh)
@@ -61,11 +61,11 @@ extract "module.prop" \$MODPATH
 #----------------------------------------
 ADBROOT="/data/adb"
 BASHENV="\$ADBROOT/.bashenv"
-INSTALLER="\$MODPATH/installer.bash"
+INSTALLER="\$MODPATH/installer.sh"
 
 extract ".bashenv/*" \$ADBROOT
 extract "\$IDENTIFIER_KEY" \$BASHENV
-extract "installer.bash" \$MODPATH
+extract "installer.sh" \$MODPATH
 
 #----------------------------------------
 # Environment validation
@@ -118,7 +118,7 @@ bashexe -c ". \$DEFAULT_PATH/util_functions.sh; source \$INSTALLER"
 # Cleanup
 #----------------------------------------
 [ -d \$BASHENV ] && rm -rf \$BASHENV
-[ -f \$MODPATH/installer.bash ] && rm \$MODPATH/installer.bash
+[ -f \$MODPATH/installer.sh ] && rm \$MODPATH/installer.sh
 
 EOF
 
