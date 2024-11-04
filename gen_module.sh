@@ -6,9 +6,7 @@
 # Author: Taylo @ https://github.com/i-taylo
 #==============================================================================
 
-#------------------------------------------------------------------------------
 # Module Configuration
-#------------------------------------------------------------------------------
 MODULE_ID="bash_example"
 MODULE_NAME="bash-example-name"
 MODULE_VERSION="1.0"
@@ -21,29 +19,23 @@ UPDATE_JSON="#<json file link>"
 LAUNCHER_CODE="template/customize.sh"
 INSTALLATION_CODE="template/installer.sh"
 
-#------------------------------------------------------------------------------
 # Generate Launcher Script (customize.sh)
-#------------------------------------------------------------------------------
 cat > "$LAUNCHER_CODE" << EOF
 # Auto generated customize.sh script
 # This script handles initial module setup and environment preparation
+# Please don't modify or add anything here, instead use the installer.sh script.
 
 SKIPUNZIP=1
 WORKSPACE="/data/adb/modules/$MODULE_ID"
 DEFAULT_PATH="/data/adb/magisk"
 
-#----------------------------------------
-# File extraction utility
-#----------------------------------------
 extract() {
     local filename=\$1
     local dst=\$2
     unzip -qo "\$ZIPFILE" "\$filename" -d "\$dst"
 }
 
-#----------------------------------------
 # Root interface detection
-#----------------------------------------
 KSUDIR="/data/adb/ksu"
 BUSYBOX="\$DEFAULT_PATH/busybox"
 KSU=false
@@ -53,18 +45,10 @@ if [ -d \$KSUDIR ]; then
     BUSYBOX="\$DEFAULT_PATH/bin/busybox"
 fi
 
-#----------------------------------------
-# Extract required files
-#----------------------------------------
-extract "module.prop" \$MODPATH
-
-#----------------------------------------
 # Setup bash environment
-#----------------------------------------
+INSTALLER="\$TMPDIR/installer.sh"
 
-INSTALLER="\$MODPATH/installer.sh"
-
-extract "installer.sh" \$MODPATH
+extract "installer.sh" \$TMPDIR
 extract "bin/bash.xz" \$TMPDIR
 
 if [ ! -f "\$TMPDIR/bin/bash.xz" ]; then
@@ -73,16 +57,11 @@ else
     \$BUSYBOX xz -d \$TMPDIR/bin/bash.xz
 fi
 
-#----------------------------------------
-# Set file permissions
-#----------------------------------------
+# Setting up files permissions
 chmod 755 "\$TMPDIR/bin/bash" || abort "Couldn't change -> \$TMPDIR/bin/bash permission"
-
 chmod +x "\$INSTALLER" || abort "Couldn't change -> \$INSTALLER permission"
 
-#----------------------------------------
 # Setup module environment
-#----------------------------------------
 export ZIPFILE
 export MODPATH
 export OUTFD
@@ -95,23 +74,15 @@ export ARCH
 export BMODID
 export BUSYBOX
 
-#----------------------------------------
-# Define bash executor
-#----------------------------------------
+# bash executor
 bashexe() {
     \$TMPDIR/bin/bash "\$@"
 }
 
-#----------------------------------------
-# Execute installer
-#----------------------------------------
+# Finally execute the installer
 BMODID="\$(bashexe --set-module-id $MODULE_ID)"
+sed -i "1s|^#!.*|#!\$TMPDIR/bin/bash|" \$INSTALLER
 bashexe -c ". \$DEFAULT_PATH/util_functions.sh; source \$INSTALLER"    
-
-#----------------------------------------
-# Cleanup
-#----------------------------------------
-[ -f \$MODPATH/installer.sh ] && rm \$MODPATH/installer.sh
 
 EOF
 
@@ -151,5 +122,3 @@ if ! mv "template/$ZIPFILE_NAME" .; then
 fi
 
 echo "Successfully created: $ZIPFILE_NAME"
-
-cp $ZIPFILE_NAME /sdcard
