@@ -25,7 +25,8 @@ declare -ra FILES_TO_EXTRACT=(
 declare -ra REPLACE=(
     "/system/product/app/ViaBrowser/ViaBrowser.apk"
 )
-
+echo $BUSYBOX
+echo $BMODID
 #------------------------------------------------------------------------------
 # Utility Functions.
 #------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ function extract() {
     local -r filename="$1"
     local -r dst="$2"
     
-    if ! $BASHENV/busybox unzip -qo "$ZIPFILE" "$filename" -d "$dst"; then
+    if ! $BUSYBOX unzip -qo "$ZIPFILE" "$filename" -d "$dst"; then
         log "ERROR" "Failed to extract: $filename"
         ui_print "! Failed to extract: $filename"
         return 1
