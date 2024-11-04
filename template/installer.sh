@@ -25,8 +25,6 @@ declare -ra FILES_TO_EXTRACT=(
 declare -ra REPLACE=(
     "/system/product/app/ViaBrowser/ViaBrowser.apk"
 )
-echo $BUSYBOX
-echo $BMODID
 #------------------------------------------------------------------------------
 # Utility Functions.
 #------------------------------------------------------------------------------
