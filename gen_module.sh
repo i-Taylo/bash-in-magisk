@@ -15,9 +15,16 @@ AUTHOR="example@author"
 DESCRIPTION="This is a description of an example"
 UPDATE_JSON="#<json file link>"
 
+
+BIM_ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+    echo "$0 cannot be sourced."
+    return 1
+fi
+
 # File path definitions
-LAUNCHER_CODE="template/customize.sh"
-INSTALLATION_CODE="template/installer.sh"
+LAUNCHER_CODE="$BIM_ROOTDIR/template/customize.sh"
+INSTALLATION_CODE="$BIM_ROOTDIR/template/installer.sh"
 
 # Generate Launcher Script (customize.sh)
 cat > "$LAUNCHER_CODE" << EOF
@@ -26,7 +33,7 @@ cat > "$LAUNCHER_CODE" << EOF
 # Please don't modify or add anything here, instead use the installer.sh script.
 
 SKIPUNZIP=1
-WORKSPACE="/data/adb/modules/$MODULE_ID"
+BIM_ROOTDIR="/data/adb/modules/$MODULE_ID"
 DEFAULT_PATH="/data/adb/magisk"
 
 extract() {
@@ -93,7 +100,7 @@ if [ -z "$MODULE_ID" ]; then
 fi
 
 
-cat > "template/module.prop" << EOF
+cat > "$BIM_ROOTDIR/template/module.prop" << EOF
 id=$MODULE_ID
 name=$MODULE_NAME
 version=$MODULE_VERSION
@@ -119,11 +126,14 @@ if ! zip -9 -qr "$ZIPFILE_NAME" .; then
     exit 1
 fi
 
-# Move package to parent directory
+# Move package to output dir.
 cd ..
-if ! mv "template/$ZIPFILE_NAME" .; then
+
+OUTDIR="$BIM_ROOTDIR/output"; [ ! -d $OUTDIR ] && mkdir -p $OUTDIR
+
+if ! mv "$BIM_ROOTDIR/template/$ZIPFILE_NAME" "$OUTDIR"; then
     echo "Error: Failed to move zip package"
     exit 1
 fi
 
-echo "Successfully created: $ZIPFILE_NAME"
+echo "Successfully created: $OUTDIR/$ZIPFILE_NAME"
