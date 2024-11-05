@@ -62,17 +62,7 @@ chmod 755 "\$TMPDIR/bin/bash" || abort "Couldn't change -> \$TMPDIR/bin/bash per
 chmod +x "\$INSTALLER" || abort "Couldn't change -> \$INSTALLER permission"
 
 # Setup module environment
-export ZIPFILE
-export MODPATH
-export OUTFD
-export TMPDIR
-export DEFAULT_PATH
-export KSU
-export ABI32
-export IS64BIT
-export ARCH
-export BMODID
-export BUSYBOX
+export ZIPFILE MODPATH OUTFD TMPDIR DEFAULT_PATH KSU ABI32 IS64BIT ARCH BMODID BUSYBOX
 
 # bash executor
 bashexe() {
@@ -89,6 +79,20 @@ EOF
 #------------------------------------------------------------------------------
 # Generate module.prop
 #------------------------------------------------------------------------------
+
+if [ -z "$MODULE_ID" ]; then
+    echo "Warning: Module ID is empty and it cannot be empty..."
+    while [ -z "$modid" ]; do
+        echo -ne "Enter module ID: "
+        read modid
+        if [ -z "$modid" ]; then
+            echo "Error: Module ID cannot be empty. Please enter a valid ID."
+        fi
+    done
+    MODULE_ID="$modid"
+fi
+
+
 cat > "template/module.prop" << EOF
 id=$MODULE_ID
 name=$MODULE_NAME
@@ -105,6 +109,7 @@ EOF
 #------------------------------------------------------------------------------
 echo "Generating module zipfile..."
 cd template || { echo "Error: template directory not found"; exit 1; }
+MODULE_NAME="${MODULE_NAME// /-}"
 ZIPFILE_NAME="$MODULE_NAME-$MODULE_VERSION.zip"
 
 # Create zip with maximum compression
