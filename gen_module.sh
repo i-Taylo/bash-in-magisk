@@ -6,7 +6,16 @@
 # Author: Taylo @ https://github.com/i-taylo
 #==============================================================================
 
+# TEXT COLORS
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[0;33m'; RESET='\033[0m'
+BIM_ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+    echo "$(basename $0) cannot be sourced."
+    return 1
+fi
+
 # Module Configuration
+# Customize these variables to reflect your module's information.
 MODULE_ID="bash_example"
 MODULE_NAME="bash-example-name"
 MODULE_VERSION="1.0"
@@ -15,19 +24,13 @@ AUTHOR="example@author"
 DESCRIPTION="This is a description of an example"
 UPDATE_JSON="#<json file link>"
 
-
-BIM_ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
-    echo "$0 cannot be sourced."
-    return 1
-fi
-
 # File path definitions
 INSTALLER_FILENAME="installer.sh" # Renemable 
-LAUNCHER_CODE="$BIM_ROOTDIR/template/customize.sh"
+LAUNCHER_CODE="$BIM_ROOTDIR/template/name.sh"
 INSTALLATION_CODE="$BIM_ROOTDIR/template/$INSTALLER_FILENAME"
 
 # Generate Launcher Script (customize.sh)
+[[ "$LAUNCHER_CODE" != *"customize.sh" ]] && echo -e "${RED}Error${RESET}: The launcher code has been renamed to ${RED}$(basename "$LAUNCHER_CODE")${RESET}.\nPlease name it ${GREEN}customize.sh${RESET} or the installation will fail during module flashing." && exit 1
 cat > "$LAUNCHER_CODE" << EOF
 # Auto generated customize.sh script
 # This script handles initial module setup and environment preparation
