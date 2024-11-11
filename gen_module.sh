@@ -26,7 +26,7 @@ UPDATE_JSON="#<json file link>"
 
 # File path definitions
 INSTALLER_FILENAME="installer.sh" # Renemable 
-LAUNCHER_CODE="$BIM_ROOTDIR/template/name.sh"
+LAUNCHER_CODE="$BIM_ROOTDIR/template/customize.sh"
 INSTALLATION_CODE="$BIM_ROOTDIR/template/$INSTALLER_FILENAME"
 
 # Generate Launcher Script (customize.sh)
