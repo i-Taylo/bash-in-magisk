@@ -23,8 +23,9 @@ if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
 fi
 
 # File path definitions
+INSTALLER_FILENAME="installer.sh" # Renemable 
 LAUNCHER_CODE="$BIM_ROOTDIR/template/customize.sh"
-INSTALLATION_CODE="$BIM_ROOTDIR/template/installer.sh"
+INSTALLATION_CODE="$BIM_ROOTDIR/template/$INSTALLER_FILENAME"
 
 # Generate Launcher Script (customize.sh)
 cat > "$LAUNCHER_CODE" << EOF
@@ -33,7 +34,6 @@ cat > "$LAUNCHER_CODE" << EOF
 # Please don't modify or add anything here, instead use the installer.sh script.
 
 SKIPUNZIP=1
-BIM_ROOTDIR="/data/adb/modules/$MODULE_ID"
 DEFAULT_PATH="/data/adb/magisk"
 
 extract() {
@@ -53,9 +53,9 @@ if [ -d \$KSUDIR ]; then
 fi
 
 # Setup bash environment
-INSTALLER="\$TMPDIR/installer.sh"
+INSTALLER="\$TMPDIR/$INSTALLER_FILENAME"
 
-extract "installer.sh" \$TMPDIR
+extract "$INSTALLER_FILENAME" \$TMPDIR
 extract "bin/bash.xz" \$TMPDIR
 
 if [ ! -f "\$TMPDIR/bin/bash.xz" ]; then
@@ -69,7 +69,7 @@ chmod 755 "\$TMPDIR/bin/bash" || abort "Couldn't change -> \$TMPDIR/bin/bash per
 chmod +x "\$INSTALLER" || abort "Couldn't change -> \$INSTALLER permission"
 
 # Setup module environment
-export ZIPFILE MODPATH OUTFD TMPDIR DEFAULT_PATH KSU ABI32 IS64BIT ARCH BMODID BUSYBOX
+export OUTFD ABI API MAGISKBIN NVBASE BOOTMODE MAGISK_VER_CODE MAGISK_VER ZIPFILE MODPATH TMPDIR DEFAULT_PATH KSU ABI32 IS64BIT ARCH BMODID BUSYBOX
 
 # bash executor
 bashexe() {
@@ -114,6 +114,12 @@ EOF
 #------------------------------------------------------------------------------
 # Create Module Package
 #------------------------------------------------------------------------------
+# Quick check before proceeding.
+if [ ! -f $INSTALLATION_CODE ]; then
+    echo -e "$INSTALLER_FILENAME missing from module template, cannot proceed without $INSTALLER_FILENAME it's required."
+    exit 1
+fi
+
 echo "Generating module zipfile..."
 cd template || { echo "Error: template directory not found"; exit 1; }
 MODULE_NAME="${MODULE_NAME// /-}"
