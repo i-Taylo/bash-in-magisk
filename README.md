@@ -69,7 +69,7 @@ $ZIPFILE
 etc...
 ```
 and the others are all allowed.
-`gen_module.sh`-›`line 72`
+`gen_module.sh`-›`line 75`
 
 ***
 ## License
