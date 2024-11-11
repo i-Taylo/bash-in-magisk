@@ -9,10 +9,12 @@
 # TEXT COLORS
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[0;33m'; RESET='\033[0m'
 BIM_ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+[[ "${BASH_SOURCE[0]}" != "$0" ]] && {
     echo "$(basename $0) cannot be sourced."
     return 1
-fi
+}
+
+# ===========================
 
 # Module Configuration
 # Customize these variables to reflect your module's information.
@@ -23,6 +25,8 @@ MODULE_VERSION_CODE="1000"
 AUTHOR="example@author"
 DESCRIPTION="This is a description of an example"
 UPDATE_JSON="#<json file link>"
+
+# ===========================
 
 # File path definitions
 INSTALLER_FILENAME="installer.sh" # Renemable 
@@ -90,7 +94,7 @@ EOF
 # Generate module.prop
 #------------------------------------------------------------------------------
 
-if [ -z "$MODULE_ID" ]; then
+[ -z "$MODULE_ID" ] && {
     echo "Warning: Module ID is empty and it cannot be empty..."
     while [ -z "$modid" ]; do
         echo -ne "Enter module ID: "
@@ -100,8 +104,7 @@ if [ -z "$MODULE_ID" ]; then
         fi
     done
     MODULE_ID="$modid"
-fi
-
+}
 
 cat > "$BIM_ROOTDIR/template/module.prop" << EOF
 id=$MODULE_ID
@@ -111,17 +114,22 @@ versionCode=$MODULE_VERSION_CODE
 author=$AUTHOR
 description=$DESCRIPTION
 updateJson=$UPDATE_JSON
-
 EOF
 
 #------------------------------------------------------------------------------
 # Create Module Package
 #------------------------------------------------------------------------------
+
+# Checking if installer named -> install.sh
+[[ "$INSTALLATION_CODE" == *"install.sh" ]] && {
+    echo -e "The name ->$INSTALLER_FILENAME<- cannot be used for the installer, as it conflicts with $(basename $LAUNCHER_CODE).\nPlease use a different name, or the installation will fail during module flashing."
+    exit 1
+}
 # Quick check before proceeding.
-if [ ! -f $INSTALLATION_CODE ]; then
+[ ! -f $INSTALLATION_CODE ] && {
     echo -e "$INSTALLER_FILENAME missing from module template, cannot proceed without $INSTALLER_FILENAME it's required."
     exit 1
-fi
+}
 
 echo "Generating module zipfile..."
 cd template || { echo "Error: template directory not found"; exit 1; }
