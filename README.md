@@ -6,8 +6,6 @@
 ***`QuickInfo`***</br>
 A utility to make a Magisk module that provides full Bash shell capabilities on Android, complete with modern syntax support and essential features. It is designed for developers and power users, enabling a robust Bash environment.
 
-* Supports KernelSU.
-
 ### Installation
 ```bash
 git clone https://github.com/i-Taylo/bash-in-magisk.git
@@ -57,6 +55,22 @@ The template does not include the following files by default, so you may need to
 ├── sepolicy.rule
 ```
 There is no need to modify `gen_module.sh` to include these files, as they will be automatically packed during the zipping process.
+***
+
+**Environment variables like:**
+```bash
+$OUTFD
+$ABI
+$API
+$MAGISKBIN
+$NVBASE
+$BOOTMODE
+$ZIPFILE
+etc...
+```
+and the others are all allowed.
+`gen_module.sh`-›`line 72`
+
 ***
 ## License
 
