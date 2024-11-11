@@ -69,8 +69,8 @@ $ZIPFILE
 etc...
 ```
 and the others are all allowed.
-`gen_module.sh`-›`line 75`
-[**Jump to line 75**](https://github.com/i-taylo/bash-in-magisk/blob/main/gen_module.sh#L75)
+`gen_module.sh`-›`line 79`
+[**Jump to line 79**](https://github.com/i-taylo/bash-in-magisk/blob/main/gen_module.sh#L79)
 
 
 ***
