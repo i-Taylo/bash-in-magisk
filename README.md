@@ -10,7 +10,7 @@ A utility to make a Magisk module that provides full Bash shell capabilities on 
 
 - **Android NDK (only if zygisk module)**: Ensure the `NDK_HOME` variable points to the correct Android NDK path.
 `configuration.cfg`-›`line 22`
-[**Jump to line 22**](https://github.com/i-taylo/bash-in-magisk/blob/main/gen_module.sh#L22)
+[**Jump to line 22**](https://github.com/i-taylo/bash-in-magisk/blob/main/configuration.cfg#L22)
 
 
 ### Installation
