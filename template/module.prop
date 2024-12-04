@@ -1,0 +1,7 @@
+id=bash-example
+name=bash-example-name
+version=1.0
+versionCode=1000
+author=example@author
+description=This is a description of an example
+updateJson=#<json file link>
