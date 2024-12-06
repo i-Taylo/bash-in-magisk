@@ -442,9 +442,16 @@ if [ -z "$(cat jni/Android.mk)" ] && [ -z "$(cat jni/Application.mk)" ]; then
 fi
 
 # Build using ndk-build with parallel jobs
-if ! ndk-build -j"$(nproc)" 2>&1 | redi "ZYGISK BUILD"; then
-    status_print - "Failure during building JNI libs"
+ndk-build -j$(nproc) 2>&1 | redi "ZYGISK BUILD"
+exit_status=${PIPESTATUS[0]}
+
+if [ $exit_status -ne 0 ]; then
+    status_print - "Failure during building JNI libraries.\nThe error might be an incorrect line declaration in Android.mk...\nYour main cpp code is: $(get_color "ORANGE")${MODULE_NAME// /-}.cpp$(get_color "RESET")  Does this match LOCAL_SRC_FILES in Android.mk?\nAndroid.mk file:\nLine -> $(nl jni/Android.mk | sed -n '/LOCAL_SRC_FILES/ { s/^[[:space:]]*//; p }')\n$(get_color "CYAN")Otherwise$(get_color "RESET"), you need to check the 'ZYGISK BUILD' output; the error might be in the Android.mk or Applications.mk file!"
+else
+    return 0
 fi
+
+
 EOBUILDSCRIPT
 
 	chmod +x "$build_script_path"
