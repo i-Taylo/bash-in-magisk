@@ -852,5 +852,3 @@ main() {
 
 # Execute Main Function
 main "$@"
-
-cp -af ~/jnilab/magisk/output/bash-example-name-1.0.zip /storage/emulated/0/
