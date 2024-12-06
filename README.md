@@ -6,7 +6,7 @@ A utility to make a Magisk module that provides full Bash shell capabilities on 
 
 ## Prerequisites
 - **System Requirements**:
-  - Linux, macOS, or WSL (Windows Subsystem for Linux).
+  - Linux, macOS, Termux, or WSL (Windows Subsystem for Linux).
 
 - **Android NDK (only if zygisk module)**: Ensure the `NDK_HOME` variable points to the correct Android NDK path.
 `configuration.cfg`-›`line 22`
