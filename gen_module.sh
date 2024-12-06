@@ -357,7 +357,15 @@ EOF
 			empty=0
 		fi
 	} || {
-		status_print + "${APPLICATION_MK##*/} already exists, ignored"
+		status_print + "${APPLICATION_MK##*/} already exists, changing ABI list..."
+		APP_ABI_LINE="APP_ABI := "
+		for arch in "${abi_filter[@]}"; do
+			APP_ABI_LINE+=" $arch"
+		done
+
+		sed -i '/^APP_ABI[[:space:]]*:=/d' "$APPLICATION_MK"
+		sed -i "1s|^|$APP_ABI_LINE\n|" "$APPLICATION_MK"
+
 	}
 
 	[[ $empty -eq 0 ]] && {
@@ -838,3 +846,4 @@ main() {
 # Execute Main Function
 main "$@"
 
+cp -af ~/jnilab/magisk/output/bash-example-name-1.0.zip /storage/emulated/0/
