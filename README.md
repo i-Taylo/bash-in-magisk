@@ -15,8 +15,8 @@ A utility to make a Magisk module that provides full Bash shell capabilities on 
 
 ### Installation
 ```bash
-git clone https://github.com/i-Taylo/bash-in-magisk.git
-cd bash-in-magisk
+git clone https://github.com/i-Taylo/bash-in-magisk.git "my-magisk-module"
+cd my-magisk-module
 chmod +x gen_module.sh
 ./gen_module.sh
 ```
