@@ -358,13 +358,22 @@ EOF
 		fi
 	} || {
 		status_print + "${APPLICATION_MK##*/} already exists, changing ABI list..."
-		APP_ABI_LINE="APP_ABI := "
+
+		APP_ABI_LINE="APP_ABI :="
 		for arch in "${abi_filter[@]}"; do
 			APP_ABI_LINE+=" $arch"
 		done
 
-		sed -i '/^APP_ABI[[:space:]]*:=/d' "$APPLICATION_MK"
-		sed -i "1s|^|$APP_ABI_LINE\n|" "$APPLICATION_MK"
+		CURRENT_APP_ABI_LINE=$(grep '^APP_ABI[[:space:]]*:=' "$APPLICATION_MK" || command echo "")
+
+		if [[ "$APP_ABI_LINE" != "$CURRENT_APP_ABI_LINE" ]]; then
+			status_print + "Updating APPLICATION_MK file with new ABI filters..."
+
+			sed -i '/^APP_ABI[[:space:]]*:=/d' "$APPLICATION_MK"
+			sed -i "1s|^|$APP_ABI_LINE\n|" "$APPLICATION_MK"
+		else
+			status_print + "ABI filters are unchanged. No update needed."
+		fi
 
 	}
 
