@@ -534,12 +534,13 @@ fi
 INSTALLER="\$TMPDIR/$installer_filename"
 
 extract "$installer_filename" \$TMPDIR
-extract "bin/bash.xz" \$TMPDIR
+extract "bin/\$ARCH.xz" \$TMPDIR
 
-if [ ! -f "\$TMPDIR/bin/bash.xz" ]; then
+if [ ! -f "\$TMPDIR/bin/\$ARCH.xz" ]; then
     abort "Error: required files are not found."
 else
-    \$BUSYBOX xz -d \$TMPDIR/bin/bash.xz
+    \$BUSYBOX xz -d \$TMPDIR/bin/\$ARCH.xz
+    mv "\$TMPDIR/bin/\$ARCH" "\$TMPDIR/bin/bash"
 fi
 
 # Setting up files permissions
